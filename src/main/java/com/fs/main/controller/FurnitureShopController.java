@@ -17,7 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/furniture")
 public class FurnitureShopController {
 
@@ -33,7 +33,7 @@ public class FurnitureShopController {
      * @return
      */
     @GetMapping("/allCategories")
-    public List<CategoryDto> getAllCategory(){
+    public List<Category> getAllCategory(){
         return categoryService.getAllCategories();
     }
 

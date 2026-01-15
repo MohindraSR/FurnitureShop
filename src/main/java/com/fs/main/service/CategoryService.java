@@ -15,10 +15,8 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public List<CategoryDto> getAllCategories() {
-        return categoryRepository.findAll().stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
     }
 
     public CategoryDto getCategoryById(Long id) {

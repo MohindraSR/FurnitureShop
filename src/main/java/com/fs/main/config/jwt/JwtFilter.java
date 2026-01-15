@@ -36,7 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 || path.startsWith("/auth/")
                 || path.startsWith("/css/")
                 || path.startsWith("/js/")
-                || path.startsWith("/furniture/**");
+                || path.startsWith("/furniture/*");
     }
 
     @Override
