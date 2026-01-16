@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CategoryService {
@@ -25,10 +24,9 @@ public class CategoryService {
         return toDto(category);
     }
 
-    public CategoryDto createCategory(CategoryDto dto) {
+    public Category createCategory(CategoryDto dto) {
         Category category = new Category(dto.getName(), dto.getDescription());
-        category = categoryRepository.save(category);
-        return toDto(category);
+        return categoryRepository.save(category);
     }
 
     public CategoryDto updateCategory(Long id, CategoryDto dto) {

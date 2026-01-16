@@ -2,6 +2,7 @@ package com.fs.main.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class PageController {
@@ -16,14 +17,10 @@ public class PageController {
         return "Login"; // Login.jsp
     }
 
-    @GetMapping("/customerRegistrationPre")
+    @GetMapping("/customerRegistration")
     public String registerPage() {
         return "CustomerRegistration";
     }
 
-    @GetMapping("/furniture/home")
-    public String homePage() {
-        return "CustomerHomePage";
-    }
 }
 

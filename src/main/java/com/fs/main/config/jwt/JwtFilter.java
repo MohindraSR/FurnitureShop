@@ -31,12 +31,10 @@ public class JwtFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         return path.equals("/login")
-                || path.equals("/checkLoginCredential")
-                || path.equals("/customerRegistrationPre")
-                || path.startsWith("/auth/")
+                || path.equals("/customerRegistration")
+                || path.startsWith("/api/auth/")
                 || path.startsWith("/css/")
-                || path.startsWith("/js/")
-                || path.startsWith("/furniture/*");
+                || path.startsWith("/js/");
     }
 
     @Override
@@ -52,6 +50,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         final String authHeader = request.getHeader("Authorization");
+        System.out.println("Auth header: " + request.getHeader("Authorization"));
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
@@ -77,6 +76,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             } catch (Exception ex) {
                 // Invalid token → clear context (Security will handle 401)
+                System.err.println("JWT validation failed: " + ex.getMessage());
                 SecurityContextHolder.clearContext();
             }
         }

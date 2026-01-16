@@ -15,7 +15,8 @@ import java.util.Collections;
 import java.util.Map;
 
 @RestController
-public class AuthController {
+@RequestMapping("/api/auth/")
+public class ApiAuthLoginRegisterController {
 
     CustomerService customerService;
 
@@ -23,9 +24,9 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
 
-    public AuthController(AuthenticationManager authenticationManager,
-                          JwtUtil jwtUtil,
-                          CustomerService customerService) {
+    public ApiAuthLoginRegisterController(AuthenticationManager authenticationManager,
+                                          JwtUtil jwtUtil,
+                                          CustomerService customerService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.customerService = customerService;
@@ -39,7 +40,7 @@ public class AuthController {
      * @param customer
      * @return
      */
-    @PostMapping("/customerRegistrationPost")
+    @PostMapping("/customerRegistration")
     public Map<String, Object> customerRegistrationPost(@RequestBody Customer customer) {
         customerService.createCustomer(customer);
         String token = jwtUtil.generateToken(customer.getUserName());
@@ -52,7 +53,7 @@ public class AuthController {
      * if validate then display customer home page
      * else display warning
      */
-    @PostMapping("/checkLoginCredential")
+    @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> checkLoginCredential(
             @RequestBody CustomerDto customerDto) {
 

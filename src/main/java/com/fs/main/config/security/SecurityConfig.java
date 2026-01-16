@@ -62,8 +62,9 @@ public class SecurityConfig {
                                 "/checkLoginCredential",
                                 "/customerRegistrationPre",
                                 "/customerRegistrationPost",
-                                "/auth/**",
-                                "/furniture/**",
+                                "/api/auth/**",
+                                "/api/user/**",
+                                "/user/**",
                                 "/css/**",
                                 "/js/**"
                         ).permitAll()                // Public endpoints

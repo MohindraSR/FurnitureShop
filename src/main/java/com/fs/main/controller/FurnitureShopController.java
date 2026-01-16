@@ -6,19 +6,16 @@ import com.fs.main.dto.ProductDto;
 import com.fs.main.entity.Category;
 import com.fs.main.entity.Product;
 import com.fs.main.service.CategoryService;
-import com.fs.main.service.CustomerService;
 import com.fs.main.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/furniture")
+@RequestMapping("/api/user")
 public class FurnitureShopController {
 
     @Autowired
@@ -47,8 +44,13 @@ public class FurnitureShopController {
         return categoryService.getCategoryById(id);
     }
 
+    /**
+     * Purpose: Create new Category
+     * @param categoryDto
+     * @return
+     */
     @PostMapping("/createCategory")
-    public CategoryDto createCategory(@Valid @RequestBody CategoryDto categoryDto){
+    public Category createCategory(@Valid @RequestBody CategoryDto categoryDto){
         return categoryService.createCategory(categoryDto);
     }
 

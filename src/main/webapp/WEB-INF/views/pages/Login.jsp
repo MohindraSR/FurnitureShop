@@ -67,12 +67,11 @@
     </form>
 </div>
 <script src="${pageContext.request.contextPath}/js/bootstrap.bundle.min.js"></script>
-
 <script>
     document.getElementById("loginForm").addEventListener("submit", function (e) {
-        e.preventDefault(); // 🔴 stop form submit
+        e.preventDefault(); // stop normal form submit
 
-        fetch("${pageContext.request.contextPath}/checkLoginCredential", {
+        fetch("${pageContext.request.contextPath}/api/auth/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -86,14 +85,17 @@
                 if (!response.ok) {
                     throw new Error("Invalid username or password");
                 }
-                return response.json();
+                return response.json(); // 👈 return JSON
             })
-            .then(data => {
-                // ✅ Store JWT (use sessionStorage for better security)
-                sessionStorage.setItem("jwt", data["jwt-token"]);
+            .then(data => { // 👈 RECEIVE data HERE
 
-                // ✅ Redirect to secured page
-                window.location.href = "${pageContext.request.contextPath}/furniture/home";
+                // ✅ Store JWT
+                sessionStorage.setItem("jwt", data["jwt-token"]);
+                console.log("JWT stored:", sessionStorage.getItem("jwt"));
+
+                // ✅ Redirect
+                window.location.href =
+                    "${pageContext.request.contextPath}/user/home";
             })
             .catch(error => {
                 const errorDiv = document.getElementById("errorMsg");
@@ -104,5 +106,7 @@
             });
     });
 </script>
+
+
 </body>
 </html>

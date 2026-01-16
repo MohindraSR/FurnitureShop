@@ -47,7 +47,8 @@
                     <a class="nav-link active" href="#">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/furniture/products">Products</a>
+                    <a class="nav-link" href="#" id="products">Products</a>
+
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/cart">Cart</a>
@@ -96,17 +97,30 @@
     </div>
 </div>
 
-<!-- Store JWT for API use -->
-<script>
-    const jwtToken = "${jwtToken}";
-    if (jwtToken) {
-        localStorage.setItem("jwtToken", jwtToken);
-        console.log("JWT Token stored:", jwtToken);
-    }
-</script>
-
 <!-- Bootstrap JS -->
 <script src="${pageContext.request.contextPath}/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById("products").addEventListener("click", function (e) {
+        e.preventDefault(); // stop page navigation
+
+        fetch("${pageContext.request.contextPath}/api/user/allProducts", {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + sessionStorage.getItem("jwt"),
+                "Content-Type": "application/json"
+            }
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("Unauthorized");
+                return res.json();
+            })
+            .then(data => {
+                console.log("Products:", data);
+                // render products here
+            })
+            .catch(err => console.error(err));
+    });
+</script>
 
 </body>
 </html>
