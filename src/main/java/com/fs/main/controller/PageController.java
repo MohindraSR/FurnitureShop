@@ -17,7 +17,7 @@ public class PageController {
         return "Login"; // Login.jsp
     }
 
-    @GetMapping("/customerRegistration")
+    @GetMapping("/register")
     public String registerPage() {
         return "CustomerRegistration";
     }

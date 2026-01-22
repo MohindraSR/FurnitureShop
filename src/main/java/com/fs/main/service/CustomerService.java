@@ -28,9 +28,9 @@ public class CustomerService implements UserDetailsService {
      * Purpose: Create new customer
      * @param customer
      */
-    public void createCustomer(Customer customer) {
+    public Customer createCustomer(Customer customer) {
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-        customerRepository.save(customer);
+        return customerRepository.save(customer);
     }
 
     @Override

@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
@@ -37,7 +38,8 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Furniture Shop</a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -47,17 +49,20 @@
                     <a class="nav-link active" href="#">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" id="products">Products</a>
-
+                    <!-- Products already loaded on page -->
+                    <a class="nav-link" href="#products-section">Products</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/cart">Cart</a>
+                    <a class="nav-link" href="#">Cart</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/orders">My Orders</a>
+                    <a class="nav-link" href="#">My Orders</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-danger" href="/logout">Logout</a>
+                    <a class="nav-link text-danger"
+                       href="${pageContext.request.contextPath}/logout">
+                        Logout
+                    </a>
                 </li>
             </ul>
         </div>
@@ -68,11 +73,11 @@
 <div class="hero-section">
     <h1>Furniture Online Shop</h1>
     <p>Premium Quality Furniture for Your Dream Home</p>
-    <h5 class="mt-3">Welcome, ${username}</h5>
+    <h5 class="mt-3">Welcome, <strong>${username}</strong></h5>
 </div>
 
-<!-- Content Section -->
-<div class="container mt-5">
+<!-- Categories -->
+<%--<div class="container mt-5">
     <div class="row text-center">
         <div class="col-md-4">
             <div class="card shadow-sm p-3">
@@ -95,32 +100,58 @@
             </div>
         </div>
     </div>
+</div>--%>
+
+<!-- Product List -->
+<div class="container mt-5" id="products-section">
+    <h3 class="text-center mb-4">Available Products</h3>
+
+    <div class="row">
+
+        <c:forEach var="product" items="${products}">
+            <div class="col-md-4 col-sm-6 mb-4">
+
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+
+                        <h5 class="card-title fw-bold">
+                                ${product.name}
+                        </h5>
+
+                        <h6 class="card-subtitle mb-2 text-muted">
+                                ${product.category.name}
+                        </h6>
+
+                        <p class="card-text">
+                                ${product.description}
+                        </p>
+
+                        <p class="card-text">
+                            <strong>Price:</strong> ₹${product.price}
+                        </p>
+
+                        <p class="card-text">
+                            <strong>Stock:</strong> ${product.stockQuantity}
+                        </p>
+
+                    </div>
+                </div>
+
+            </div>
+        </c:forEach>
+
+        <c:if test="${empty products}">
+            <div class="col-12 text-center text-muted">
+                <p>No products available</p>
+            </div>
+        </c:if>
+
+    </div>
+
 </div>
 
 <!-- Bootstrap JS -->
 <script src="${pageContext.request.contextPath}/js/bootstrap.bundle.min.js"></script>
-<script>
-    document.getElementById("products").addEventListener("click", function (e) {
-        e.preventDefault(); // stop page navigation
-
-        fetch("${pageContext.request.contextPath}/api/user/allProducts", {
-            method: "GET",
-            headers: {
-                "Authorization": "Bearer " + sessionStorage.getItem("jwt"),
-                "Content-Type": "application/json"
-            }
-        })
-            .then(res => {
-                if (!res.ok) throw new Error("Unauthorized");
-                return res.json();
-            })
-            .then(data => {
-                console.log("Products:", data);
-                // render products here
-            })
-            .catch(err => console.error(err));
-    });
-</script>
 
 </body>
 </html>

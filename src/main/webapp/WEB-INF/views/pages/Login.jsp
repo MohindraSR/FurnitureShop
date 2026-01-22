@@ -50,7 +50,7 @@
         </div>
     </c:if>
 
-    <form id="loginForm">
+    <form id="loginForm" >
         <div class="mb-3">
             <label for="userId" class="form-label">User ID</label>
             <input type="text" class="form-control" id="userName" name="userName" placeholder="Enter your User ID" required>
@@ -62,14 +62,14 @@
 
         <button type="submit" class="btn btn-primary w-100">Login</button>
         <small class="form-text d-block mt-3 text-center">
-            Not have an account? <a href="customerRegistrationPre" class="text-decoration-none">Click here</a>
+            Not have an account? <a href="/register" class="text-decoration-none">Click here</a>
         </small>
     </form>
 </div>
 <script src="${pageContext.request.contextPath}/js/bootstrap.bundle.min.js"></script>
 <script>
     document.getElementById("loginForm").addEventListener("submit", function (e) {
-        e.preventDefault(); // stop normal form submit
+        e.preventDefault();
 
         fetch("${pageContext.request.contextPath}/api/auth/login", {
             method: "POST",
@@ -81,32 +81,23 @@
                 password: document.getElementById("password").value
             })
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Invalid username or password");
+            .then(res => {
+                if (res.redirected) {
+                    window.location.href = res.url; // ✅ follow redirect
+                } else {
+                    return res.text();
                 }
-                return response.json(); // 👈 return JSON
             })
-            .then(data => { // 👈 RECEIVE data HERE
-
-                // ✅ Store JWT
-                sessionStorage.setItem("jwt", data["jwt-token"]);
-                console.log("JWT stored:", sessionStorage.getItem("jwt"));
-
-                // ✅ Redirect
-                window.location.href =
-                    "${pageContext.request.contextPath}/user/home";
+            .then(html => {
+                if (html) {
+                    document.open();
+                    document.write(html);
+                    document.close();
+                }
             })
-            .catch(error => {
-                const errorDiv = document.getElementById("errorMsg");
-                errorDiv.textContent = error.message;
-                errorDiv.classList.remove("d-none");
-
-                setTimeout(() => errorDiv.classList.add("d-none"), 2000);
-            });
+            .catch(() => alert("Login failed"));
     });
+
 </script>
-
-
 </body>
 </html>

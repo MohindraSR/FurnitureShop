@@ -43,7 +43,7 @@
 <body>
 <div class="register-card">
     <h2>Create Your Account</h2>
-    <form action="customerRegistrationPost" method="POST">
+    <form action="api/auth/register" method="POST">
         <div class="mb-3">
             <label for="userName" class="form-label">User ID</label>
             <input type="text" class="form-control" id="userName" name="userName" placeholder="Enter your User ID" required>

@@ -59,6 +59,7 @@ public class SecurityConfig {
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                         .requestMatchers(
                                 "/login",
+                                "/register",
                                 "/checkLoginCredential",
                                 "/customerRegistrationPre",
                                 "/customerRegistrationPost",
