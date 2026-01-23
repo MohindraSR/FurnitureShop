@@ -22,7 +22,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class AuthServiceTest {
+class CustomerServiceTest {
 
     @Mock
     private CustomerRepository customerRepository;
@@ -84,7 +84,7 @@ class AuthServiceTest {
 
         UserDetails userDetails =
                 customerService.loadUserByUsername("test_user");
-
+        // remove hard coded values and add
         assertNotNull(userDetails);
         assertEquals("test_user", userDetails.getUsername());
         assertEquals("encoded-password", userDetails.getPassword());
@@ -102,6 +102,7 @@ class AuthServiceTest {
 
         assertThrows(UsernameNotFoundException.class, () ->
                 customerService.loadUserByUsername("unknown"));
+        //assert exception message from service class
     }
 
 
@@ -122,6 +123,7 @@ class AuthServiceTest {
                 customerService.getCurrentCustomerProfile();
 
         assertNotNull(currentCustomer);
+        // add addresses remove hard code value
         assertEquals("test_user", currentCustomer.getUserName());
 
         Mockito.verify(customerRepository, Mockito.times(1))

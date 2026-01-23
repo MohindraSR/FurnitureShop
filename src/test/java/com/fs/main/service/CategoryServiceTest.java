@@ -17,7 +17,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceTest {
@@ -46,8 +45,8 @@ class CategoryServiceTest {
         Category result = categoryService.createCategory(dto);
 
         assertNotNull(result);
-        assertEquals("Chair", result.getName());
-        assertEquals("Wooden chair", result.getDescription());
+        assertEquals(saved.getName(), result.getName());
+        assertEquals(saved.getDescription(), result.getDescription());
     }
 
     // should throw exception when category name is null
@@ -88,15 +87,18 @@ class CategoryServiceTest {
         Category c1 = new Category(1L, "Chair", "Wooden");
         Category c2 = new Category(2L, "Table", "Dining");
 
-        List<Category> mockList = List.of(c1, c2);
+        List<Category> categoryList = List.of(c1, c2);
 
         Mockito.when(categoryRepository.findAll())
-                .thenReturn(mockList);
+                .thenReturn(categoryList);
 
         List<Category> result = categoryService.getAllCategories();
 
         assertNotNull(result);
-        assertEquals(mockList.size(), result.size());
+        assertEquals(categoryList.size(), result.size());
+        assertEquals(c1.getName(), result.get(0).getName());
+        assertEquals(c2.getDescription(), result.get(1).getDescription());
+        // add index values assert
     }
 
     // Return empty list
@@ -154,9 +156,7 @@ class CategoryServiceTest {
     // Should update category successfully
     @Test
     void shouldUpdateCategorySuccessfully() {
-
         Long id = 1L;
-
         Category existing = new Category();
         existing.setCategoryId(id);
         existing.setName("Old Name");

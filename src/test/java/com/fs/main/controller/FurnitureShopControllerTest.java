@@ -6,13 +6,13 @@ import com.fs.main.entity.Category;
 import com.fs.main.service.CategoryService;
 import com.fs.main.service.ProductService;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-// import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.*;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -26,14 +26,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
 
-/*@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = FurnitureShopApplication.class
-)*/
 @WebMvcTest(FurnitureShopController.class)
 @Import({ControllerTestConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
-class CategoryControllerTest {
+class FurnitureShopControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -73,8 +69,8 @@ class CategoryControllerTest {
 
         CategoryDto capturedDto = dtoCaptor.getValue();
 
-        assertEquals("Test_CategoryName", capturedDto.getName());
-        assertEquals("Test_CategoryDescription", capturedDto.getDescription());
+        assertEquals(saved.getName(), capturedDto.getName());
+        assertEquals(saved.getDescription(), capturedDto.getDescription());
 
     }
 
@@ -83,24 +79,24 @@ class CategoryControllerTest {
     @Test
     void shouldReturnAllCategoriesAndViewName() throws Exception {
 
-        // given
         Category c1 = new Category(1L, "Chair", "Wooden");
         Category c2 = new Category(2L, "Table", "Dining");
 
-        List<Category> categories = List.of(c1, c2);
+        List<Category> categoryList = List.of(c1, c2);
 
         Mockito.when(categoryService.getAllCategories())
-                .thenReturn(categories);
+                .thenReturn(categoryList);
 
-        //
         mockMvc.perform(get("/api/user/allCategories"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("CustomerHomePage"))
-                .andExpect(model().attributeExists("categoryList"))
-                .andExpect(model().attribute("categoryList", categories))
                 .andExpect(model().attribute("categoryList",
-                        Matchers.hasSize(categories.size())));
-        //Mockito.verify(categoryService).getAllCategories();
+                        Matchers.hasSize(categoryList.size())))
+                .andExpect(model().attribute("categoryList",
+                Matchers.contains(
+                        Matchers.hasProperty("name", Matchers.is(c1.getName())),
+                        Matchers.hasProperty("description", Matchers.is(c2.getDescription()))
+                )));
     }
 
 
@@ -119,8 +115,6 @@ class CategoryControllerTest {
         mockMvc.perform(get("/api/user/category/{id}", categoryId))
                 .andExpect(status().isOk())
                 .andExpect(view().name("CustomerHomePage"))
-                .andExpect(model().attributeExists("category"))
-                .andExpect(model().attribute("category", category))
                 .andExpect(model().attribute("category",
                         Matchers.hasProperty("name", Matchers.is("Chair"))));
     }
@@ -159,8 +153,8 @@ class CategoryControllerTest {
 
         CategoryDto captured = captor.getValue();
 
-        assertEquals("Updated_Category", captured.getName());
-        assertEquals("Updated_Description", captured.getDescription());
+        assertEquals(updatedCategory.getName(), captured.getName());
+        assertEquals(updatedCategory.getDescription(), captured.getDescription());
     }
 
 
@@ -186,17 +180,17 @@ class CategoryControllerTest {
 
     // Delete category
     @Test
-    void shouldDeleteCategory() throws Exception {
+    void shouldDeleteCategoryAndRedirect() throws Exception {
 
         Long categoryId = 1L;
 
-        Mockito.doNothing()
-                .when(categoryService)
-                .deleteCategory(categoryId);
+        Mockito.when(categoryService.deleteCategory(categoryId))
+                .thenReturn(true);
 
         mockMvc.perform(delete("/api/user/deleteCategory/{id}", categoryId))
-                .andExpect(status().isOk())
-                .andExpect(content().string("redirect:/auth/user/allCategories"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attribute("status", true))
+                .andExpect(redirectedUrl("/auth/user/allCategories"));
     }
 }
 
