@@ -15,7 +15,8 @@ import lombok.*;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "customer_id")
+    private Long customerId;
 
     @NotBlank
     @Column(unique = true)
@@ -31,4 +32,11 @@ public class Customer {
 
     private String address;
 
+    public Customer(String userName, String password, String name, String email, String address) {
+        this.userName = userName;
+        this.password = password;
+        this.name = name;
+        this.email = email;
+        this.address = address;
+    }
 }

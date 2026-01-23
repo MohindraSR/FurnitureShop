@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -19,6 +18,7 @@ public class ProductService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
@@ -57,7 +57,7 @@ public class ProductService {
         product.setCategory(category);
         return productRepository.save(product);
     }
-
+    
     public void deleteProduct(Long id) {
         if (!productRepository.existsById(id)) {
             throw new RuntimeException("Product not found");

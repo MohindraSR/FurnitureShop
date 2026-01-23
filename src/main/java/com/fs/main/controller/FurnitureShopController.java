@@ -6,19 +6,21 @@ import com.fs.main.dto.ProductDto;
 import com.fs.main.entity.Category;
 import com.fs.main.entity.Product;
 import com.fs.main.service.CategoryService;
-import com.fs.main.service.CustomerService;
 import com.fs.main.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Controller
-@RequestMapping("/furniture")
+@RestController
+@RequestMapping("/api/user")
 public class FurnitureShopController {
 
     @Autowired
@@ -28,13 +30,41 @@ public class FurnitureShopController {
 
 
     // **Categories Entity Operations**
+
+    /**
+     * Purpose: Create new Category
+     * @param categoryDto
+     * @return
+     */
+   // @PostMapping("/createCategory")
+  /*  public Category createCategory(@Valid @RequestBody CategoryDto categoryDto){
+        return categoryService.createCategory(categoryDto);
+    }*/
+
+    @PostMapping("/createCategory")
+    public String createCategory(
+             @Valid @ModelAttribute CategoryDto categoryDto,
+             RedirectAttributes redirectAttributes) {
+        Category category = categoryService.createCategory(categoryDto);
+
+        if (category != null) {
+            return "redirect:/api/user/allProducts";
+        }
+        redirectAttributes.addFlashAttribute("error", "Something went wrong");
+        return "redirect:/api/user/createCategory";
+    }
+
+
     /**
      * Purpose: Get All Categories list
      * @return
      */
     @GetMapping("/allCategories")
-    public List<CategoryDto> getAllCategory(){
-        return categoryService.getAllCategories();
+    public ModelAndView getAllCategory(ModelAndView modelAndView){
+        List<Category> categoryList = categoryService.getAllCategories();
+        modelAndView.addObject("categoryList", categoryList);
+        modelAndView.setViewName("CustomerHomePage");
+        return modelAndView;
     }
 
     /**
@@ -43,16 +73,12 @@ public class FurnitureShopController {
      * @return
      */
     @GetMapping("/category/{id}")
-    public CategoryDto getCategory(@PathVariable Long id){
-        return categoryService.getCategoryById(id);
+    public ModelAndView getCategory(@PathVariable Long id, ModelAndView modelAndView){
+         Category category = categoryService.getCategoryById(id);
+         modelAndView.addObject("category", category);
+         modelAndView.setViewName("CustomerHomePage");
+        return modelAndView;
     }
-
-    @PostMapping("/createCategory")
-    public CategoryDto createCategory(@Valid @RequestBody CategoryDto categoryDto){
-        return categoryService.createCategory(categoryDto);
-    }
-
-
 
     /**
      * Purpose: Update Category as per id
@@ -61,9 +87,13 @@ public class FurnitureShopController {
      * @return
      */
     @PutMapping("/updateCategory/{id}")
-    public CategoryDto updateCategory(@PathVariable Long id,
-                                      @Valid @RequestBody CategoryDto categoryDto){
-        return categoryService.updateCategory(id, categoryDto);
+    public String updateCategory(@PathVariable Long id,
+                                      @Valid @RequestBody CategoryDto categoryDto,
+                                 RedirectAttributes redirectAttributes){
+
+         Category category = categoryService.updateCategory(id, categoryDto);
+
+        return "redirect:/auth/user/allCategories";
     }
 
     /**
@@ -72,41 +102,76 @@ public class FurnitureShopController {
      * @return
      */
     @DeleteMapping("/deleteCategory/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Long id){
-        categoryService.deleteCategory(id);
-        return ResponseEntity.noContent().build();
+    public String  deleteCategory(@PathVariable Long id){
+        boolean status = categoryService.deleteCategory(id);
+        return "redirect:/auth/user/allCategories";
     }
 
     // ** Product Entity Operations**
 
     /**
+     * Purpose: Create new product
+     * @param productDto
+     * @return
+     */
+    @PostMapping("/createProduct")
+    public String  createProduct(@Valid @RequestBody ProductDto productDto){
+        productService.createProduct(productDto);
+
+        return "redirect:/auth/user/allProducts";
+    }
+
+    /*@GetMapping("/allProduct")
+    public List<Product> getAllProducts(){
+        return productService.getAllProducts();
+    }*/
+    /**
      * purpose: Get all product list
      * @return
      */
     @GetMapping("/allProducts")
-    public List<Product> getAllProducts(){
-        return productService.getAllProducts();
+    public ModelAndView getAllProduct(ModelAndView modelAndView){
+        List<Product> productList = new ArrayList<>();
+        productList = productService.getAllProducts();
+        modelAndView.addObject("products", productList);
+        modelAndView.setViewName("CustomerHomePage");
+        return  modelAndView;
     }
 
+    /**
+     * Purpose: Get Product Detail by Id
+     * @param id
+     * @return
+     */
     @GetMapping("/getProductById/{id}")
-    public Product getProduct(@PathVariable Long id){
-        return productService.getProductById(id);
+    public ModelAndView getProduct(@PathVariable Long id, ModelAndView modelAndView){
+        Product product = productService.getProductById(id);
+        modelAndView.addObject("productById", product);
+        modelAndView.setViewName("CustomerHomePage");
+        return modelAndView;
     }
 
-    @PostMapping("/createProduct")
-    public Product createProduct(@Valid @RequestBody ProductDto productDto){
-        return productService.createProduct(productDto);
-    }
-
+    /**
+     * Purpose: Update Product
+     * @param id
+     * @param productDto
+     * @return
+     */
     @PutMapping("/updateProduct/{id}")
-    public Product updateProduct(@PathVariable Long id,
+    public String updateProduct(@PathVariable Long id,
                                  @Valid @RequestBody ProductDto productDto){
-        return productService.updateProduct(id, productDto);
+         productService.updateProduct(id, productDto);
+         return "redirect:/auth/user/allProducts";
     }
 
+    /**
+     * Purpose: Delete Product by Id
+     * @param id
+     * @return
+     */
     @DeleteMapping("/deleteProduct/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id){
+    public String deleteProduct(@PathVariable Long id){
         productService.deleteProduct(id);
-        return ResponseEntity.noContent().build();
+        return "redirect:/auth/user/allProducts";
     }
 }

@@ -12,6 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class ProductDto {
+    private Long productId;
     @NotBlank(message = "Name is required")
     private String name;
 
@@ -27,4 +28,25 @@ public class ProductDto {
 
     @NotNull(message = "Category ID is required")
     private Long categoryId;
+
+    private String categoryName;
+
+
+    public ProductDto(String name, String description, Double price, Integer stockQuantity, Long categoryId) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+        this.categoryId = categoryId;
+    }
+
+    public ProductDto(Long productId, String name, String description, Double price, Integer stockQuantity, String categoryName) {
+        this.categoryName = categoryName;
+        this.stockQuantity = stockQuantity;
+        this.price = price;
+        this.description = description;
+        this.name = name;
+        this.productId = productId;
+    }
+
 }

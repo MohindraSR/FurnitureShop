@@ -29,7 +29,7 @@ public class OrderService {
         // Check stock and calculate total
         double totalAmount = 0;
         for (OrderItem item : order.getItems()) {
-            Product product = productRepository.findById(item.getProduct().getId())
+            Product product = productRepository.findById(item.getProduct().getProductId())
                     .orElseThrow(() -> new RuntimeException("Product not found"));
             // Stock check
             if (product.getStockQuantity() < item.getQuantity()) {
@@ -68,6 +68,6 @@ public class OrderService {
     }
 
     public List<Order> getOrdersByCustomerId(Long customerId) {
-        return orderRepository.findByCustomerId(customerId);
+        return orderRepository.findByCustomerCustomerId(customerId);
     }
 }

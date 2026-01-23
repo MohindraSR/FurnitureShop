@@ -59,11 +59,13 @@ public class SecurityConfig {
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                         .requestMatchers(
                                 "/login",
+                                "/register",
                                 "/checkLoginCredential",
                                 "/customerRegistrationPre",
                                 "/customerRegistrationPost",
-                                "/auth/**",
-                                "/furniture/**",
+                                "/api/auth/**",
+                                "/api/user/**",
+                                "/user/**",
                                 "/css/**",
                                 "/js/**"
                         ).permitAll()                // Public endpoints
