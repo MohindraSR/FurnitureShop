@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CategoryService {
@@ -15,42 +14,49 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public List<CategoryDto> getAllCategories() {
-        return categoryRepository.findAll().stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+    public Category createCategory(CategoryDto dto) {
+
+        if (dto.getName() == null || dto.getName().trim().isEmpty()) {
+            throw new RuntimeException("Category name must not be empty");
+        }
+
+        try {
+            Category category = new Category(dto.getName(), dto.getDescription());
+            return categoryRepository.save(category);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create category", e);
+        }
     }
 
-    public CategoryDto getCategoryById(Long id) {
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
+    }
+
+    public Category getCategoryById(Long id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
-        return toDto(category);
+        return category;
     }
 
-    public CategoryDto createCategory(CategoryDto dto) {
-        Category category = new Category(dto.getName(), dto.getDescription());
-        category = categoryRepository.save(category);
-        return toDto(category);
-    }
-
-    public CategoryDto updateCategory(Long id, CategoryDto dto) {
+    public Category updateCategory(Long id, CategoryDto dto) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
         category.setName(dto.getName());
         category.setDescription(dto.getDescription());
         category = categoryRepository.save(category);
-        return toDto(category);
+        return category;
     }
 
-    public void deleteCategory(Long id) {
+    public boolean deleteCategory(Long id) {
         if (!categoryRepository.existsById(id)) {
             throw new RuntimeException("Category not found");
         }
-        categoryRepository.deleteById(id);
-    }
-
-    private CategoryDto toDto(Category category) {
-        return new CategoryDto(category.getName(), category.getDescription());
+        try {
+            categoryRepository.deleteById(id);
+            return true;
+        }catch (Exception cause){
+            return false;
+        }
     }
 }
 
