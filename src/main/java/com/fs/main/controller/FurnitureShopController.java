@@ -1,6 +1,5 @@
 package com.fs.main.controller;
 
-import com.fs.main.config.jwt.JwtUtil;
 import com.fs.main.dto.CategoryDto;
 import com.fs.main.dto.ProductDto;
 import com.fs.main.entity.Category;
@@ -9,9 +8,6 @@ import com.fs.main.service.CategoryService;
 import com.fs.main.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -102,8 +98,9 @@ public class FurnitureShopController {
      * @return
      */
     @DeleteMapping("/deleteCategory/{id}")
-    public String  deleteCategory(@PathVariable Long id){
+    public String  deleteCategory(@PathVariable Long id, RedirectAttributes redirectAttributes){
         boolean status = categoryService.deleteCategory(id);
+        redirectAttributes.addFlashAttribute("status", status);
         return "redirect:/auth/user/allCategories";
     }
 

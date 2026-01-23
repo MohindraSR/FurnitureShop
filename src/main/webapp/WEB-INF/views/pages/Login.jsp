@@ -50,7 +50,7 @@
         </div>
     </c:if>
 
-    <form id="loginForm" >
+    <form action="api/auth/login" method="post" >
         <div class="mb-3">
             <label for="userId" class="form-label">User ID</label>
             <input type="text" class="form-control" id="userName" name="userName" placeholder="Enter your User ID" required>
