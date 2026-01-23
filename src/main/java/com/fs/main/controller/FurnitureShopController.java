@@ -98,8 +98,9 @@ public class FurnitureShopController {
      * @return
      */
     @DeleteMapping("/deleteCategory/{id}")
-    public String  deleteCategory(@PathVariable Long id){
+    public String  deleteCategory(@PathVariable Long id, RedirectAttributes redirectAttributes){
         boolean status = categoryService.deleteCategory(id);
+        redirectAttributes.addFlashAttribute("status", status);
         return "redirect:/auth/user/allCategories";
     }
 
